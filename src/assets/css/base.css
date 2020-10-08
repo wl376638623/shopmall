@@ -54,4 +54,7 @@ a {
 .right {
   float: right;
 }
+body {
+  box-sizing: border-box;
+}
 
