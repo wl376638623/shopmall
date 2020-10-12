@@ -9,11 +9,11 @@
     export default {
         name: "GoodsList",
       components:{
-        GoodsListItem
+          GoodsListItem
       },
       props:{
           goods:{
-            type :Array,
+            type : Array,
             default(){
               return []
             }
@@ -27,6 +27,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+
   padding: 2px;
 }
+
 </style>

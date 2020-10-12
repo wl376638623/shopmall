@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="goods-item">
     <img :src="goodsItem.show.img" alt="">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
@@ -12,8 +12,8 @@
 <script>
     export default {
         name: "GoodsListItem",
-      props:{
-          goodsItem:{
+      props :{
+          goodsItem :{
             type:Object,
             default(){
               return {}
@@ -27,7 +27,7 @@
   .goods-item {
     padding-bottom: 40px;
     position: relative;
-    /*width: 150px;*/
+
     width: 48%;
   }
 
