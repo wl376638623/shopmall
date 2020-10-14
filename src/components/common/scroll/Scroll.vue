@@ -15,6 +15,10 @@
           type:Number,
           default : 0
         },
+        pullUpLoad: {
+          type: Boolean,
+          default: false
+        }
 
       },
       data(){
@@ -30,8 +34,11 @@
           this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp()
         },
         refresh(){
-
+          // console.log('lala');
           this.scroll && this.scroll.refresh()
+        },
+        getScrollY(){
+          return this.scroll ? this.scroll.y : 0
         }
       },
       mounted() {
@@ -45,7 +52,12 @@
         this.scroll.on('scroll',(position)=>{
           this.$emit('scroll',position)
         })
-          this.scroll.refresh()
+        //3.监听scroll滚动
+        if (this.pullUpLoad){
+          this.scroll.on('pullingUp',()=>{
+            this.$emit('pullingUp')
+          })
+        }
       }
     }
 </script>
