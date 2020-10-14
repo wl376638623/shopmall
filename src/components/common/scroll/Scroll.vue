@@ -15,10 +15,7 @@
           type:Number,
           default : 0
         },
-        pullUpLoad:{
-          type: Boolean,
-          default: false
-        }
+
       },
       data(){
           return {
@@ -27,10 +24,14 @@
       },
       methods:{
         scrollTo(x,y,time){
-          this.scroll.scrollTo(x,y,time)
+         this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x,y,time)
         },
         finishPullUp(){
-          this.scroll.finishPullUp()
+          this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp()
+        },
+        refresh(){
+
+          this.scroll && this.scroll.refresh()
         }
       },
       mounted() {
@@ -44,10 +45,7 @@
         this.scroll.on('scroll',(position)=>{
           this.$emit('scroll',position)
         })
-        //3.监听上拉事件
-        this.scroll.on('pullingUp',()=>{
-          this.$emit('pullingUp')
-        })
+          this.scroll.refresh()
       }
     }
 </script>
