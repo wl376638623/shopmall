@@ -1,17 +1,17 @@
-export function debounce(func,delay){
+export function debounce(func, delay) {
   let time = null
   return function (...args) {
     if (time) clearTimeout(time)
 
-    time = setTimeout(()=>{
-      func.apply(this,args)
-    },delay)
+    time = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
   }
 }
 
 
 // 如果传过来是个单数,前面加个0
-function padLeftZero (str) {
+function padLeftZero(str) {
   return ('00' + str).substr(str.length);
 };
 

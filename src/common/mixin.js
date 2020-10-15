@@ -1,18 +1,18 @@
 import {debounce} from "./utils";
 
 export const itemListenerLixin = {
-  data(){
+  data() {
     return {
-      itemImgListener : null,
-      newRefresh:null
+      itemImgListener: null,
+      newRefresh: null
     }
   },
-  mounted(){
-    this.newRefresh = debounce(this.$refs.scroll.refresh,200)
-    this. itemImgListener= ()=>{
+  mounted() {
+    this.newRefresh = debounce(this.$refs.scroll.refresh, 200)
+    this.itemImgListener = () => {
       this.newRefresh()
     }
-    this.$bus.$on('itemImgLoad',this.itemImgListener)
+    this.$bus.$on('itemImgLoad', this.itemImgListener)
   }
 
 }
