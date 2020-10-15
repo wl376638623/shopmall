@@ -18,7 +18,10 @@
 		name: "DetailGoodsInfo",
     props: {
       detailInfo: {
-        type: Object
+        type: Object,
+        default(){
+          return {}
+        }
       }
     },
     data() {
