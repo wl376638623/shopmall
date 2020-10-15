@@ -9,7 +9,8 @@
 </template>
 
 <script>
-  import {Swiper,SwiperItem} from "components/common/swiper/index"
+  import Swiper from "../../../components/common/swiper/Swiper";
+  import SwiperItem from "../../../components/common/swiper/SwiperItem";
     export default {
         name: "HomeSwiper",
       props:{
