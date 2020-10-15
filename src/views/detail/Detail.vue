@@ -1,13 +1,14 @@
 <template>
   <div id="detail">
-   <detail-nav-bar class="detail-nav"></detail-nav-bar>
+   <detail-nav-bar class="detail-nav" @titleClick="titleClick"></detail-nav-bar>
  <scroll class="content" ref="scroll">
    <detail-swiper :top-images="topImages"></detail-swiper>
    <detail-base-info :goods="goods"></detail-base-info>
    <detail-shop-info :shop="shops"></detail-shop-info>
    <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
-   <detail-param-info :param-info="paramInfo"></detail-param-info>
-   <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
+   <detail-param-info :param-info="paramInfo" ref="params"></detail-param-info>
+   <detail-comment-info :comment-info="commentInfo" ref="comment"></detail-comment-info>
+   <goods-list :goods="recommends" ref="recommends"></goods-list>
  </scroll>
   </div>
 </template>
@@ -22,8 +23,11 @@
   import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
   import Scroll from "../../components/common/scroll/Scroll";
+  import GoodsList from "../../components/content/goods/GoodsList";
 
-  import {getDetail,Goods,Shop,GoodsParam} from "network/detail";
+  import {getDetail,Goods,Shop,GoodsParam,getRecommend} from "network/detail";
+  import {debounce} from "../../common/utils";
+  import {itemListenerLixin} from "../../common/mixin";
 
   export default {
         name: "detail",
@@ -35,8 +39,10 @@
         DetailShopInfo,
         Scroll,
         DetailParamInfo,
-        DetailCommentInfo
+        DetailCommentInfo,
+        GoodsList
       },
+    mixins : [itemListenerLixin],
       data(){
         return {
           iid : null,
@@ -45,11 +51,15 @@
           shops:{},
           detailInfo:{},
           paramInfo:{},
-          commentInfo:{}
+          commentInfo:{},
+          recommends:[],
+          themeTopYs:[],
+          getThemeTopY:null
 
         }
       },
-      created() {
+
+    created() {
           //1.保存传入的iid
           this.iid = this.$route.params.iid
           //2.根据iid请求详情数据
@@ -70,12 +80,41 @@
           if(data.rate.cRate !== 0){
             this.commentInfo = data.rate.list[0]
           }
+
         })
+
+          //3.请求推荐数据
+        getRecommend().then(res=>{
+          // console.log(res);
+          this.recommends=res.data.list
+        })
+      //4.给getThemeTopY赋值
+      this.getThemeTopY = debounce(()=>{
+        this.themeTopYs = []
+        this.themeTopYs.push(0);
+        this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.recommends.$el.offsetTop)
+
+      },100)
+
       },
-      methods:{
+    mounted() {
+
+    },
+    destroyed() {
+      this.$bus.$off('itemImgLoad',this.itemImgListener)
+
+    },
+    methods:{
         imageLoad(){
-          this.$refs.scroll.refresh()
-        }
+          this.newRefresh()
+          this.getThemeTopY()
+
+        },
+      titleClick(index){
+        this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],300)
+      }
       },
   }
 </script>

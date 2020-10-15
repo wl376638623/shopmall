@@ -33,7 +33,7 @@
     getHomeMutidata,
     getHomeGoods
   } from "network/home";
-  import {debounce} from "../../common/utils";
+  import {itemListenerLixin} from "../../common/mixin";
 
   export default {
       name: "Home",
@@ -47,6 +47,7 @@
         Scroll,
         BackTop
         },
+    mixins:[itemListenerLixin],
     data(){
         return {
           banners:[],
@@ -60,7 +61,8 @@
           isShowBackTop:false,
           tabOffsetTop: 0,
           isTabFixed:false,
-          saveY : 0
+          saveY : 0,
+
 
         }
     },
@@ -72,10 +74,12 @@
     },
     activated() {
         this.$refs.scroll.scrollTo(0,this.saveY,0)
+        this.$refs.scroll.refresh()
     },
     deactivated() {
         this.saveY = this.$refs.scroll.getScrollY()
-        this.$refs.scroll.refresh()
+        //取消全局监听事件
+        this.$bus.$off('itemImgLoad',this.itemImgListener)
     },
     created() {
       //1.请求多个数据
@@ -87,13 +91,6 @@
       this.getHomeGoods('sell')
     },
     mounted() {
-        //1.图片加载的事件监听
-      const refresh = debounce(this.$refs.scroll.refresh,200)
-      this.$bus.$on('itemImageLoad',()=>{
-        //this.$refs.scroll.refresh()
-        refresh()
-      })
-
 
     },
     methods:{
@@ -129,6 +126,7 @@
       },
       loadMore(){
         this.getHomeGoods(this.currentType)
+        this.newRefresh()
       },
       swiperImageLoad(){
         //2.获取tabControl的offsetTop
