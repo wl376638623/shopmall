@@ -10,6 +10,9 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"></detail-comment-info>
       <goods-list :goods="recommends" ref="recommends"></goods-list>
     </scroll>
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
+
   </div>
 </template>
 
@@ -21,9 +24,12 @@
   import DetailShopInfo from "./childComps/DetailShopInfo";
   import DetailParamInfo from "./childComps/DetailParamInfo";
   import DetailCommentInfo from "./childComps/DetailCommentInfo";
+  import DetailBottomBar from "./childComps/DetailBottomBar";
+
 
   import Scroll from "../../components/common/scroll/Scroll";
   import GoodsList from "../../components/content/goods/GoodsList";
+  import BackTop from "../../components/content/backTop/BackTop";
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from "network/detail";
   import {debounce} from "../../common/utils";
@@ -38,9 +44,11 @@
       DetailBaseInfo,
       DetailShopInfo,
       Scroll,
+      BackTop,
       DetailParamInfo,
       DetailCommentInfo,
-      GoodsList
+      GoodsList,
+      DetailBottomBar
     },
     mixins: [itemListenerLixin],
     data() {
@@ -55,7 +63,8 @@
         recommends: [],
         themeTopYs: [],
         getThemeTopY: null,
-        currentIndex: 0
+        currentIndex: 0,
+        isShowBackTop: false,
 
       }
     },
@@ -131,8 +140,31 @@
           }
         }
 
+      },
+      //3回到顶部
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0, 500)
+      },
+      contentScroll(position) {
+        //1.判断backtop是否显示
+        this.isShowBackTop = (-position.y) > 1000
+        //2.决定tabControl会否吸顶
+        this.isTabFixed = (-position.y) > this.tabOffsetTop
+      },
+      //4.添加购物车
+      addToCart() {
+        //1.获取购物车需要展示的信息
+        const product = {};
+        product.image = this.topImages[0];
+        product.title = this.goods.title;
+        product.desc = this.goods.desc;
+        product.price = this.goods.realPrice;
+        product.iid = this.iid
+        //将商品添加到购物车中
+
       }
     },
+
   }
 </script>
 
@@ -145,7 +177,7 @@
   }
 
   .content {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 49px);
   }
 
   .detail-nav {
