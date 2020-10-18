@@ -12,6 +12,7 @@
     </scroll>
     <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
+<!--    <toast :message="message" :show="show"></toast>-->
 
   </div>
 </template>
@@ -30,10 +31,13 @@
   import Scroll from "../../components/common/scroll/Scroll";
   import GoodsList from "../../components/content/goods/GoodsList";
   import BackTop from "../../components/content/backTop/BackTop";
+  // import Toast from "../../components/common/toast/Toast";
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from "network/detail";
   import {debounce} from "../../common/utils";
   import {itemListenerLixin} from "../../common/mixin";
+
+
 
   export default {
     name: "detail",
@@ -48,7 +52,8 @@
       DetailParamInfo,
       DetailCommentInfo,
       GoodsList,
-      DetailBottomBar
+      DetailBottomBar,
+
     },
     mixins: [itemListenerLixin],
     data() {
@@ -65,6 +70,9 @@
         getThemeTopY: null,
         currentIndex: 0,
         isShowBackTop: false,
+        // message:'',
+        // show:false
+
 
       }
     },
@@ -162,7 +170,15 @@
         product.iid = this.iid
         //将商品添加到购物车中
         // this.$store.commit('addCart',product)
-        this.$store.dispatch('addToCart',product)
+        this.$store.dispatch('addToCart',product).then(res =>{
+          // this.show = true;
+          //   this.message = res;
+          // setTimeout(()=>{
+          //   this.show=false;
+          //   this.message = ''
+          // },1000)
+          this.$toast.show(res,1000)
+        })
 
       }
     },
